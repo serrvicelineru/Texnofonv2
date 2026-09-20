@@ -1,0 +1,379 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>More Case — Система приема и учета ремонтов</title>
+    <style>
+        :root {
+            --primary: #2563eb;
+            --primary-hover: #1d4ed8;
+            --bg: #0f172a;
+            --card-bg: #1e293b;
+            --text: #f8fafc;
+            --text-muted: #94a3b8;
+            --border: #334155;
+            --success: #10b981;
+            --warning: #f59e0b;
+            --whatsapp: #25d366;
+            --telegram: #0088cc;
+            --sms: #8b5cf6;
+        }
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
+            background-color: var(--bg);
+            color: var(--text);
+            margin: 0;
+            padding: 15px;
+            display: flex;
+            justify-content: center;
+        }
+        .container {
+            width: 100%;
+            max-width: 600px;
+            background: var(--card-bg);
+            padding: 20px;
+            border-radius: 20px;
+            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.5);
+            border: 1px solid var(--border);
+            box-sizing: border-box;
+        }
+        .header {
+            display: flex;
+            flex-direction: column;
+            gap: 6px;
+            border-bottom: 1px solid var(--border);
+            padding-bottom: 15px;
+            margin-bottom: 20px;
+            align-items: center;
+            text-align: center;
+        }
+        .header h1 {
+            margin: 0;
+            font-size: 26px;
+            color: #60a5fa;
+            letter-spacing: 0.5px;
+        }
+        .header p {
+            margin: 0;
+            font-size: 13px;
+            color: var(--text-muted);
+        }
+        .nav-tabs {
+            display: flex;
+            gap: 8px;
+            width: 100%;
+            margin-top: 12px;
+        }
+        .tab-btn {
+            flex: 1;
+            background: #0f172a;
+            color: var(--text-muted);
+            border: 1px solid var(--border);
+            padding: 10px;
+            border-radius: 10px;
+            cursor: pointer;
+            font-weight: 600;
+            font-size: 14px;
+            transition: 0.2s;
+            text-align: center;
+        }
+        .tab-btn.active {
+            background: var(--primary);
+            color: white;
+            border-color: var(--primary);
+        }
+        .tab-content { display: none; }
+        .tab-content.active { display: block; }
+        
+        .form-group {
+            margin-bottom: 15px;
+        }
+        label {
+            display: block;
+            font-weight: 500;
+            margin-bottom: 6px;
+            font-size: 11px;
+            color: var(--text-muted);
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+        }
+        input, textarea {
+            width: 100%;
+            padding: 12px 14px;
+            background-color: #0f172a;
+            border: 1px solid var(--border);
+            border-radius: 10px;
+            color: var(--text);
+            font-size: 15px;
+            box-sizing: border-box;
+        }
+        input:focus, textarea:focus { outline: none; border-color: var(--primary); }
+        
+        .btn {
+            background-color: var(--primary);
+            color: white;
+            border: none;
+            padding: 14px;
+            font-size: 15px;
+            font-weight: 600;
+            border-radius: 10px;
+            cursor: pointer;
+            width: 100%;
+            transition: 0.2s;
+            margin-top: 5px;
+        }
+        .btn:hover { background-color: var(--primary-hover); }
+
+        .order-card {
+            background: #0f172a;
+            border: 1px solid var(--border);
+            border-radius: 14px;
+            padding: 15px;
+            margin-bottom: 15px;
+        }
+        .order-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 10px;
+            border-bottom: 1px solid #1e293b;
+            padding-bottom: 8px;
+        }
+        .track-badge {
+            background: var(--primary);
+            color: white;
+            padding: 4px 10px;
+            border-radius: 6px;
+            font-size: 13px;
+            font-weight: bold;
+        }
+        .status-badge {
+            padding: 4px 10px;
+            border-radius: 6px;
+            font-size: 12px;
+            font-weight: bold;
+        }
+        .status-work { background: rgba(245, 158, 11, 0.2); color: var(--warning); }
+        .status-ready { background: rgba(16, 185, 129, 0.2); color: var(--success); }
+
+        .order-info { font-size: 14px; margin-bottom: 12px; color: var(--text-muted); line-height: 1.5; }
+        .order-info span { color: var(--text); font-weight: 500; }
+
+        .actions-grid {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 8px;
+        }
+        .btn-mini {
+            padding: 10px;
+            font-size: 13px;
+            border-radius: 8px;
+            border: none;
+            color: white;
+            cursor: pointer;
+            text-align: center;
+            text-decoration: none;
+            font-weight: 600;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 6px;
+            box-sizing: border-box;
+        }
+        .btn-wa { background: var(--whatsapp); }
+        .btn-tg { background: var(--telegram); }
+        .btn-sms { background: var(--sms); }
+        .btn-status { background: #334155; grid-column: span 2; }
+        .btn-del { background: #7f1d1d; grid-column: span 2; margin-top: 4px; }
+        
+        .developer-footer {
+            margin-top: 25px;
+            text-align: center;
+            font-size: 12px;
+            color: var(--text-muted);
+            border-top: 1px solid var(--border);
+            padding-top: 15px;
+        }
+        .developer-footer a { color: #60a5fa; text-decoration: none; }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <div class="header">
+            <h1>More Case</h1>
+            <p>Система приема и учета ремонтов</p>
+            <div class="nav-tabs">
+                <button class="tab-btn active" onclick="switchTab('new')">➕ Новый заказ</button>
+                <button class="tab-btn" onclick="switchTab('list')">📋 База (<span id="orderCount">0</span>)</button>
+            </div>
+        </div>
+
+        <!-- ВКЛАДКА 1: НОВЫЙ ЗАКАЗ -->
+        <div id="tab-new" class="tab-content active">
+            <form id="orderForm">
+                <div class="form-group">
+                    <label>Модель устройства:</label>
+                    <input type="text" id="model" required placeholder="Например: Samsung Galaxy A24">
+                </div>
+                <div class="form-group">
+                    <label>Неисправность / Что делать:</label>
+                    <textarea id="issue" rows="2" required placeholder="Например: Замена дисплея, чистка после воды"></textarea>
+                </div>
+                <div class="form-group">
+                    <label>Цена:</label>
+                    <input type="text" id="price" required placeholder="Например: 4500">
+                </div>
+                <div class="form-group">
+                    <label>Имя хозяина (клиента):</label>
+                    <input type="text" id="client_name" required placeholder="Имя клиента">
+                </div>
+                <div class="form-group">
+                    <label>Номер телефона:</label>
+                    <input type="text" id="client_phone" required placeholder="+998 (90) 123-45-67">
+                </div>
+                <div class="form-group">
+                    <label>Срок выполнения:</label>
+                    <input type="text" id="deadline" required placeholder="Например: 1 день / Завтра в 15:00">
+                </div>
+                <button type="submit" class="btn">Принять в ремонт и отправить в Telegram</button>
+            </form>
+        </div>
+
+        <!-- ВКЛАДКА 2: БАЗА ЗАКАЗОВ -->
+        <div id="tab-list" class="tab-content">
+            <div id="ordersContainer"></div>
+        </div>
+
+        <div class="developer-footer">
+            Разработчик: <a href="https://t.me/ko62er" target="_blank">@ko62er</a>
+        </div>
+    </div>
+
+    <script>
+        let orders = JSON.parse(localStorage.getItem('more_case_orders')) || [];
+
+        function switchTab(tab) {
+            document.querySelectorAll('.tab-content').forEach(el => el.classList.remove('active'));
+            document.querySelectorAll('.tab-btn').forEach(el => el.classList.remove('active'));
+            
+            if(tab === 'new') {
+                document.getElementById('tab-new').classList.add('active');
+                document.querySelectorAll('.tab-btn')[0].classList.add('active');
+            } else {
+                document.getElementById('tab-list').classList.add('active');
+                document.querySelectorAll('.tab-btn')[1].classList.add('active');
+                renderOrders();
+            }
+        }
+
+        document.getElementById('orderForm').addEventListener('submit', function(e) {
+            e.preventDefault();
+
+            const trackCode = 'MC-' + Math.floor(1000 + Math.random() * 9000);
+            const now = new Date();
+            const formattedDate = String(now.getDate()).padStart(2, '0') + '.' + 
+                                  String(now.getMonth() + 1).padStart(2, '0') + '.' + 
+                                  now.getFullYear();
+            
+            const newOrder = {
+                id: Date.now(),
+                track: trackCode,
+                model: document.getElementById('model').value,
+                issue: document.getElementById('issue').value,
+                price: document.getElementById('price').value,
+                name: document.getElementById('client_name').value,
+                phone: document.getElementById('client_phone').value.trim(),
+                deadline: document.getElementById('deadline').value,
+                status: 'В работе',
+                date: formattedDate
+            };
+
+            orders.unshift(newOrder);
+            saveAndRender();
+            
+            // Текст для отправки клиенту
+            const readyText = `Здравствуйте, ${newOrder.name}! Ваш аппарат (${newOrder.model}) по трек-коду *${newOrder.track}* готов к выдаче в More Case. Сумма: ${newOrder.price}. Ждем вас!`;
+            const cleanPhone = newOrder.phone.replace(/[^0-9+]/g, '');
+            const waLink = `https://wa.me/${cleanPhone}?text=${encodeURIComponent(readyText)}`;
+
+            // Красивый компактный текст для @jvmpos с короткой красивой ссылкой на WhatsApp
+            const tgMessage = `📦 *Заказ: ${newOrder.track}*%0A📱 Устройство: ${newOrder.model} — ${newOrder.issue}%0A💰 Цена: ${newOrder.price}%0A👤 Клиент: ${newOrder.name} (${newOrder.phone})%0A⏳ Срок: ${newOrder.deadline}%0A📅 Дата приема: ${newOrder.date}%0A%0A[💬 Написать клиенту в WhatsApp](${waLink})`;
+            
+            // Отправляем на @jvmpos
+            window.open(`https://t.me/jvmpos?text=${tgMessage}`, '_blank');
+
+            document.getElementById('orderForm').reset();
+            switchTab('list');
+        });
+
+        function saveAndRender() {
+            localStorage.setItem('more_case_orders', JSON.stringify(orders));
+            document.getElementById('orderCount').textContent = orders.length;
+        }
+
+        function renderOrders() {
+            const container = document.getElementById('ordersContainer');
+            saveAndRender();
+
+            if (orders.length === 0) {
+                container.innerHTML = '<p style="text-align: center; color: var(--text-muted); padding: 20px;">База заказов пока пуста</p>';
+                return;
+            }
+
+            container.innerHTML = orders.map(ord => {
+                const cleanPhone = ord.phone.replace(/[^0-9+]/g, '');
+                const readyText = `Здравствуйте, ${ord.name}! Ваш аппарат (${ord.model}) по трек-коду *${ord.track}* готов к выдаче в More Case. Сумма: ${ord.price}. Ждем вас!`;
+                const encodedText = encodeURIComponent(readyText);
+
+                const isReady = ord.status === 'Готов';
+                const statusClass = isReady ? 'status-ready' : 'status-work';
+
+                return `
+                    <div class="order-card">
+                        <div class="order-header">
+                            <span class="track-badge">📌 ${ord.track}</span>
+                            <span class="status-badge ${statusClass}">${ord.status}</span>
+                        </div>
+                        <div class="order-info">
+                            📱 Устройство: <span>${ord.model} — ${ord.issue}</span><br>
+                            💰 Цена: <span>${ord.price}</span><br>
+                            👤 Клиент: <span>${ord.name} (${ord.phone})</span><br>
+                            ⏳ Срок: <span>${ord.deadline}</span> | 📅 ${ord.date}
+                        </div>
+                        <div class="actions-grid">
+                            <button class="btn-mini btn-status" onclick="toggleStatus(${ord.id})">
+                                ${isReady ? '🔄 Вернуть в работу' : '✅ Готов (Клиенту)'}
+                            </button>
+                            <a href="https://wa.me/${cleanPhone}?text=${encodedText}" target="_blank" class="btn-mini btn-wa">💬 WhatsApp</a>
+                            <a href="https://t.me/jvmpos?text=${encodedText}" target="_blank" class="btn-mini btn-tg">✈️ Telegram</a>
+                            <a href="sms:${cleanPhone}?body=${encodedText}" class="btn-mini btn-sms">✉️ SMS</a>
+                            <button class="btn-mini btn-del" onclick="deleteOrder(${ord.id})">🗑 Удалить</button>
+                        </div>
+                    </div>
+                `;
+            }).join('');
+        }
+
+        function toggleStatus(id) {
+            orders = orders.map(ord => {
+                if (ord.id === id) {
+                    ord.status = ord.status === 'В работе' ? 'Готов' : 'В работу';
+                }
+                return ord;
+            });
+            renderOrders();
+        }
+
+        function deleteOrder(id) {
+            if(confirm('Удалить этот заказ из базы?')) {
+                orders = orders.filter(ord => ord.id !== id);
+                renderOrders();
+            }
+        }
+
+        saveAndRender();
+    </script>
+</body>
+</html>
+
