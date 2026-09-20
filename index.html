@@ -341,7 +341,7 @@
                                 ${isReady ? '🔄 Вернуть в работу' : '✅ Готов (Изменить статус)'}
                             </button>
                             <a href="https://wa.me/${cleanPhone}?text=${encodedText}" target="_blank" class="btn-mini btn-wa">💬 WhatsApp</a>
-                            <a href="https://t.me/+${cleanPhone}?text=${encodedText}" target="_blank" class="btn-mini btn-tg">✈️ Telegram</a>
+                            <a href="https://t.me/${cleanPhone}?text=${encodedText}" target="_blank" class="btn-mini btn-tg">✈️ Telegram</a>
                             <a href="sms:${cleanPhone}?body=${encodedText}" class="btn-mini btn-sms">✉️ SMS</a>
                             <button class="btn-mini btn-del" onclick="deleteOrder(${ord.id})">🗑 Удалить заказ</button>
                         </div>
