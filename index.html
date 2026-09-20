@@ -292,15 +292,20 @@
             orders.unshift(newOrder);
             saveAndRender();
             
-            // Текст для отправки клиенту
+            // Текст уведомления для клиента
             const readyText = `Здравствуйте, ${newOrder.name}! Ваш аппарат (${newOrder.model}) по трек-коду *${newOrder.track}* готов к выдаче в More Case. Сумма: ${newOrder.price}. Ждем вас!`;
+            const encodedText = encodeURIComponent(readyText);
             const cleanPhone = newOrder.phone.replace(/[^0-9+]/g, '');
-            const waLink = `https://wa.me/${cleanPhone}?text=${encodeURIComponent(readyText)}`;
 
-            // Красивый компактный текст для @jvmpos с короткой красивой ссылкой на WhatsApp
-            const tgMessage = `📦 *Заказ: ${newOrder.track}*%0A📱 Устройство: ${newOrder.model} — ${newOrder.issue}%0A💰 Цена: ${newOrder.price}%0A👤 Клиент: ${newOrder.name} (${newOrder.phone})%0A⏳ Срок: ${newOrder.deadline}%0A📅 Дата приема: ${newOrder.date}%0A%0A[💬 Написать клиенту в WhatsApp](${waLink})`;
+            // Ссылки для уведомления клиента
+            const waLink = `https://wa.me/${cleanPhone}?text=${encodedText}`;
+            const tgLink = `https://t.me/share/url?url=&text=${encodedText}`; // Или отправка через Telegram (в чат/контакт)
+            const smsLink = `sms:${cleanPhone}?body=${encodedText}`;
+
+            // Сообщение для отправки в @jvmpos с готовыми ссылками в строках
+            const tgMessage = `📦 *Заказ: ${newOrder.track}*%0A📱 Устройство: ${newOrder.model} — ${newOrder.issue}%0A💰 Цена: ${newOrder.price}%0A👤 Клиент: ${newOrder.name} (${newOrder.phone})%0A⏳ Срок: ${newOrder.deadline}%0A📅 Дата приема: ${newOrder.date}%0A%0A*Уведомить клиента:*%0A[💬 WhatsApp](${waLink}) | [✈️ Telegram](${tgLink}) | [✉️ SMS](${smsLink})`;
             
-            // Отправляем на @jvmpos
+            // Отправляем в @jvmpos
             window.open(`https://t.me/jvmpos?text=${tgMessage}`, '_blank');
 
             document.getElementById('orderForm').reset();
@@ -346,7 +351,7 @@
                                 ${isReady ? '🔄 Вернуть в работу' : '✅ Готов (Клиенту)'}
                             </button>
                             <a href="https://wa.me/${cleanPhone}?text=${encodedText}" target="_blank" class="btn-mini btn-wa">💬 WhatsApp</a>
-                            <a href="https://t.me/jvmpos?text=${encodedText}" target="_blank" class="btn-mini btn-tg">✈️ Telegram</a>
+                            <a href="https://t.me/share/url?url=&text=${encodedText}" target="_blank" class="btn-mini btn-tg">✈️ Telegram</a>
                             <a href="sms:${cleanPhone}?body=${encodedText}" class="btn-mini btn-sms">✉️ SMS</a>
                             <button class="btn-mini btn-del" onclick="deleteOrder(${ord.id})">🗑 Удалить</button>
                         </div>
@@ -358,7 +363,7 @@
         function toggleStatus(id) {
             orders = orders.map(ord => {
                 if (ord.id === id) {
-                    ord.status = ord.status === 'В работе' ? 'Готов' : 'В работу';
+                    ord.status = ord.status === 'В работе' ? 'Готов' : 'В работе';
                 }
                 return ord;
             });
