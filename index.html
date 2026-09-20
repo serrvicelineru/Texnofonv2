@@ -162,12 +162,12 @@
 
         .actions-grid {
             display: grid;
-            grid-template-columns: 1fr 1fr;
-            gap: 8px;
+            grid-template-columns: 1fr 1fr 1fr;
+            gap: 6px;
         }
         .btn-mini {
-            padding: 10px;
-            font-size: 13px;
+            padding: 10px 4px;
+            font-size: 12px;
             border-radius: 8px;
             border: none;
             color: white;
@@ -178,14 +178,14 @@
             display: flex;
             align-items: center;
             justify-content: center;
-            gap: 6px;
+            gap: 4px;
             box-sizing: border-box;
         }
         .btn-wa { background: var(--whatsapp); }
         .btn-tg { background: var(--telegram); }
         .btn-sms { background: var(--sms); }
-        .btn-status { background: #334155; grid-column: span 2; }
-        .btn-del { background: #7f1d1d; grid-column: span 2; margin-top: 4px; }
+        .btn-status { background: #334155; grid-column: span 3; }
+        .btn-del { background: #7f1d1d; grid-column: span 3; margin-top: 4px; }
         
         .developer-footer {
             margin-top: 25px;
@@ -292,18 +292,8 @@
             orders.unshift(newOrder);
             saveAndRender();
             
-            // Текст уведомления для клиента
-            const readyText = `Здравствуйте, ${newOrder.name}! Ваш аппарат (${newOrder.model}) по трек-коду *${newOrder.track}* готов к выдаче в More Case. Сумма: ${newOrder.price}. Ждем вас!`;
-            const encodedText = encodeURIComponent(readyText);
-            const cleanPhone = newOrder.phone.replace(/[^0-9+]/g, '');
-
-            // Ссылки для уведомления клиента
-            const waLink = `https://wa.me/${cleanPhone}?text=${encodedText}`;
-            const tgLink = `https://t.me/share/url?url=&text=${encodedText}`; // Или отправка через Telegram (в чат/контакт)
-            const smsLink = `sms:${cleanPhone}?body=${encodedText}`;
-
-            // Сообщение для отправки в @jvmpos с готовыми ссылками в строках
-            const tgMessage = `📦 *Заказ: ${newOrder.track}*%0A📱 Устройство: ${newOrder.model} — ${newOrder.issue}%0A💰 Цена: ${newOrder.price}%0A👤 Клиент: ${newOrder.name} (${newOrder.phone})%0A⏳ Срок: ${newOrder.deadline}%0A📅 Дата приема: ${newOrder.date}%0A%0A*Уведомить клиента:*%0A[💬 WhatsApp](${waLink}) | [✈️ Telegram](${tgLink}) | [✉️ SMS](${smsLink})`;
+            // Чистое сообщение в Telegram без лишних ссылок и кнопок внизу
+            const tgMessage = `📦 *Заказ: ${newOrder.track}*%0A📱 Устройство: ${newOrder.model} — ${newOrder.issue}%0A💰 Цена: ${newOrder.price}%0A👤 Клиент: ${newOrder.name} (${newOrder.phone})%0A⏳ Срок: ${newOrder.deadline}%0A📅 Дата приема: ${newOrder.date}`;
             
             // Отправляем в @jvmpos
             window.open(`https://t.me/jvmpos?text=${tgMessage}`, '_blank');
@@ -328,7 +318,7 @@
 
             container.innerHTML = orders.map(ord => {
                 const cleanPhone = ord.phone.replace(/[^0-9+]/g, '');
-                const readyText = `Здравствуйте, ${ord.name}! Ваш аппарат (${ord.model}) по трек-коду *${ord.track}* готов к выдаче в More Case. Сумма: ${ord.price}. Ждем вас!`;
+                const readyText = `Здравствуйте, ${ord.name}! Ваш аппарат (${ord.model}) по трек-коду ${ord.track} готов к выдаче в More Case. Сумма: ${ord.price}. Ждем вас!`;
                 const encodedText = encodeURIComponent(readyText);
 
                 const isReady = ord.status === 'Готов';
@@ -348,12 +338,12 @@
                         </div>
                         <div class="actions-grid">
                             <button class="btn-mini btn-status" onclick="toggleStatus(${ord.id})">
-                                ${isReady ? '🔄 Вернуть в работу' : '✅ Готов (Клиенту)'}
+                                ${isReady ? '🔄 Вернуть в работу' : '✅ Готов (Изменить статус)'}
                             </button>
                             <a href="https://wa.me/${cleanPhone}?text=${encodedText}" target="_blank" class="btn-mini btn-wa">💬 WhatsApp</a>
-                            <a href="https://t.me/share/url?url=&text=${encodedText}" target="_blank" class="btn-mini btn-tg">✈️ Telegram</a>
+                            <a href="https://t.me/+${cleanPhone}?text=${encodedText}" target="_blank" class="btn-mini btn-tg">✈️ Telegram</a>
                             <a href="sms:${cleanPhone}?body=${encodedText}" class="btn-mini btn-sms">✉️ SMS</a>
-                            <button class="btn-mini btn-del" onclick="deleteOrder(${ord.id})">🗑 Удалить</button>
+                            <button class="btn-mini btn-del" onclick="deleteOrder(${ord.id})">🗑 Удалить заказ</button>
                         </div>
                     </div>
                 `;
@@ -381,4 +371,3 @@
     </script>
 </body>
 </html>
-
